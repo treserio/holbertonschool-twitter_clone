@@ -7,15 +7,13 @@ import 'models.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-  Future<List<Character>> fetchBbCharacters() async {
-    dynamic res = await http.get(Uri.parse('https://breakingbadapi.com/api/characters'));
-    dynamic json = jsonDecode(res.body);
-    List<Character> output = [];
-    for (var char in json) {
-      output.add(Character.fromJson(char));
-    }
-    return output;
-  }
+  Future<List<Character>> fetchBbCharacters() async =>
+    http.get(Uri.parse('https://breakingbadapi.com/api/characters'))
+      .then((res) {
+        List characters = jsonDecode(res.body);
+        return characters.map((char) => Character.fromJson(char)).toList();
+      })
+      .catchError((err) => throw Exception('Failed to load characters from API'));
 
   @override
   Widget build(BuildContext context) {
@@ -27,24 +25,40 @@ class HomeScreen extends StatelessWidget {
         future: fetchBbCharacters(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            print(snapshot.data?[0].imgUrl);
             return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                mainAxisSpacing: 15,
+                crossAxisSpacing: 15,
+                childAspectRatio: 5/3,
+                crossAxisCount: 2,
               ),
-              itemBuilder: (context, index) => Card(
-                color: Colors.amber,
-                child: Center(child: Text('${snapshot.data?[index].name} ${snapshot.data?[index].imgUrl} ${snapshot.data?[index].id}')),
+              itemBuilder: (context, index) => GridTile(
+                footer: Container(
+                  margin: const EdgeInsets.only(bottom: 25.0, left: 25.0),
+                  child: Text(
+                    '${snapshot.data?[index].name}',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(1),
+                      fontSize: 40,
+                    ),
+                  ),
+                ),
+                child: Image.network(
+                    '${snapshot.data?[index].imgUrl}',
+                    fit: BoxFit.fitWidth,
+                ),
               ),
             );
           }
           return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                mainAxisSpacing: 2,
+                crossAxisSpacing: 2,
+                crossAxisCount: 2,
               ),
               itemBuilder: (context, index) => Card(
                 color: Colors.amber,
-                child: Center(child: Text('$index')),
+                child: Center(child: Text('preload, $index')),
               ),
             );
         },
