@@ -37,8 +37,8 @@ class HomeScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 25.0, left: 25.0),
                   child: Text(
                     '${snapshot.data?[index].name}',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(1),
+                    style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 40,
                     ),
                   ),
@@ -48,19 +48,27 @@ class HomeScreen extends StatelessWidget {
                     fit: BoxFit.fitWidth,
                 ),
               ),
+              itemCount: snapshot.data!.length,
             );
           }
-          return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 2,
-                crossAxisSpacing: 2,
-                crossAxisCount: 2,
-              ),
-              itemBuilder: (context, index) => Card(
-                color: Colors.amber,
-                child: Center(child: Text('preload, $index')),
-              ),
+          if (snapshot.hasError) {
+            return Center(
+                child: Container(
+                width: 250,
+                height: 150,
+                alignment: const Alignment(0, 0),
+                color: Colors.red,
+                child: const Text(
+                  'Error',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                  ),
+                ),
+              )
             );
+          }
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
