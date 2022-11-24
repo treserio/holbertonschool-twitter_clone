@@ -17,3 +17,23 @@ class Character {
     );
   }
 }
+
+class Quote {
+  String quote;
+  String author;
+  int id;
+
+  Quote({
+    this.quote = 'default',
+    this.author = 'url',
+    this.id = 0,
+  });
+
+  static Quote fromJson(Map<String, dynamic> json) {
+    return Quote(
+      quote: json['quote'],
+      author: json['author'],
+      id: json['quote_id'],
+    );
+  }
+}
