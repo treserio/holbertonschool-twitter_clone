@@ -14,8 +14,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Squacker',
       theme: ThemeData(
-        // primarySwatch: Colors.purple,
-        primaryColor: Colors.purple,
+        // primarySwatch: Colors.deepOrange,
+        // primaryColor: Colors.purple,
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue.shade800),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.purple.shade800),
+            shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) =>
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -31,10 +43,10 @@ class MyApp extends StatelessWidget {
         body: ListView(
           children: [
             EntryField(
-              hint: 'Enter Email',
+              hint: 'Enter email',
             ),
             EntryField(
-              hint: 'Enter Password',
+              hint: 'Enter password',
               isPassword: true,
             ),
             const FlatButton(),

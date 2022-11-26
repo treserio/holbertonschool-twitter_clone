@@ -24,12 +24,10 @@ class EntryField extends StatelessWidget {
         filled: true,
         fillColor: Colors.grey.shade300,
         focusColor: Colors.blue,
+        hoverColor: Colors.green,
         hintText: hint,
       ),
       obscureText: isPassword,
-      // style: TextStyle(
-      //   backgroundColor: Colors.grey.shade300,
-      // ),
       textAlignVertical: const TextAlignVertical(y: 0),
     ),
   );
