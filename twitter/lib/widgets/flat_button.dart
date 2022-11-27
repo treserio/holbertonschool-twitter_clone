@@ -9,20 +9,18 @@ class FlatButton extends StatelessWidget {
     this.label = 'Submit',
   });
 
-  void onPressed() => 'testing';
+  void onPressed() => print('Submitted');
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(top: 15),
+    padding: const EdgeInsetsDirectional.only(top: 15, bottom: 15),
     child: TextButton(
     onPressed: onPressed,
     child: Text(
       label,
-      style: GoogleFonts.mulish(
-        textStyle: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w800,
-        ),
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w800,
       ),
     ),
     ),

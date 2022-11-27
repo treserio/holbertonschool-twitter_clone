@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import './widgets/entry_field.dart';
 import './widgets/flat_button.dart';
+import './screens/signin_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,33 +28,12 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
               ),
             ),
+            minimumSize: MaterialStateProperty.all<Size>(const Size(0, 60)),
           ),
         ),
+        textTheme: GoogleFonts.mulishTextTheme()
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.grey.shade100,
-          foregroundColor: Colors.black87,
-          title: const Center(
-            child: Text(
-              'Squacker',
-              textAlign: TextAlign.center,
-            )
-          ),
-        ),
-        body: ListView(
-          children: [
-            EntryField(
-              hint: 'Enter email',
-            ),
-            EntryField(
-              hint: 'Enter password',
-              isPassword: true,
-            ),
-            const FlatButton(),
-          ]
-        )
-      )
+      home: const SignIn(),
     );
   }
 }
