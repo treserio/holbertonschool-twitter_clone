@@ -5,6 +5,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import '../widgets/all.dart';
 import './signup_screen.dart';
+import './forgot_password_screen.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({
@@ -97,7 +98,7 @@ class _SignInState extends State<SignIn> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Text('ForgotPassword')),
+                  MaterialPageRoute(builder: (context) => const ForgotPass()),
                 );
               },
               child: Center(
