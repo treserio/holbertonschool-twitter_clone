@@ -3,19 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 
 class FlatButton extends StatelessWidget {
   final String label;
+  final Function onPressed;
 
   const FlatButton({
     super.key,
     this.label = 'Submit',
+    required this.onPressed,
   });
-
-  void onPressed() => print('Submitted');
 
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsetsDirectional.only(top: 15, bottom: 15),
     child: TextButton(
-    onPressed: onPressed,
+    onPressed: () => onPressed(),
     child: Text(
       label,
       style: const TextStyle(

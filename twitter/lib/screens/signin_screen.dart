@@ -4,6 +4,7 @@ import 'dart:core';
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../widgets/all.dart';
+import './signup_screen.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({
@@ -65,14 +66,16 @@ class _SignInState extends State<SignIn> {
             isPassword: true,
             controller: _passwordController,
           ),
-          const FlatButton(),
+          FlatButton(
+            onPressed: () => print('Submit'),
+          ),
           Padding(
             padding: const EdgeInsetsDirectional.only(top: 30),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Text('SignUp')),
+                  MaterialPageRoute(builder: (context) => const SignUp()),
                 );
               },
               child: Center(
