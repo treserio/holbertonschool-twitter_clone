@@ -3,6 +3,9 @@ import 'dart:core';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/app_state.dart';
 
 class SideBarMenu extends StatefulWidget {
   const SideBarMenu({
@@ -190,32 +193,35 @@ class _SideBarMenuState extends State<SideBarMenu> {
           ),
           onTap: () => print('Help Center'),
         ),
-        Container(
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: Colors.grey.shade400),
-            ),
-          ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.only(left: 20),
-            leading: ColorFiltered(
-              colorFilter: const ColorFilter.srgbToLinearGamma(),
-              child: Icon(
-                Icons.logout,
-                color: Colors.grey.shade400,
+        Consumer<AppState>(
+          builder: (_, state, __) => Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.grey.shade400),
               ),
             ),
-            title: const Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            child: ListTile(
+              contentPadding: const EdgeInsets.only(left: 20),
+              leading: ColorFiltered(
+                colorFilter: const ColorFilter.srgbToLinearGamma(),
+                child: Icon(
+                  Icons.logout,
+                  color: Colors.grey.shade400,
+                ),
               ),
+              title: const Text(
+                'Logout',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              // navigate to the SignIn screen, by removing all other routes
+              onTap: () {
+                state.setpageIndex = 0;
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
             ),
-            // navigate to the SignIn screen, by removing all other routes
-            onTap: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
           ),
         ),
       ],

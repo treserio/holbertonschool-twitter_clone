@@ -32,5 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ),
     drawer: const SideBarMenu(),
+    bottomNavigationBar: const BottomMenuBar(),
   );
 }

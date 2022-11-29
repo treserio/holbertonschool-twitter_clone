@@ -3,7 +3,7 @@ import 'dart:core';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-// import '../widgets/all.dart';
+import '../widgets/all.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({
@@ -23,7 +23,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       foregroundColor: Colors.black87,
       title: const Center(
         child: Text(
-          'Home',
+          'Notifications',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w900,
@@ -31,5 +31,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         )
       ),
     ),
+    bottomNavigationBar: const BottomMenuBar(),
   );
 }
