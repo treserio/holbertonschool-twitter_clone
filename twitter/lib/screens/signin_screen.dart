@@ -4,8 +4,8 @@ import 'dart:core';
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../widgets/all.dart';
-import './signup_screen.dart';
-import './forgot_password_screen.dart';
+import './all.dart';
+
 
 class SignIn extends StatefulWidget {
   const SignIn({
@@ -68,7 +68,12 @@ class _SignInState extends State<SignIn> {
             controller: _passwordController,
           ),
           FlatButton(
-            onPressed: () => print('Submit'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+              );
+            }
           ),
           Padding(
             padding: const EdgeInsetsDirectional.only(top: 30),
