@@ -20,27 +20,21 @@ class BottomMenuBar extends StatefulWidget {
 class _BottomMenuBarState extends State<BottomMenuBar> {
   @override
   Widget build(BuildContext context) {
-    // AppState state = AppState();
+    int index = Provider.of<AppState>(context, listen: false).pageIndex;
 
-    // Consumer thing = Consumer<AppState>(
-    //   builder: (context, state, child) {
-    //     print(context);
-    //     return Text('${state.pageIndex}');
-    //   }
-    // );
+    Color homeColor = index == 0 ?
+      Colors.blue.shade800 : Colors.grey;
+    Color searchColor = index == 1 ?
+      Colors.blue.shade800 : Colors.grey;
+    Color notifColor = index == 2 ?
+      Colors.blue.shade800 : Colors.grey;
+    Color chatsColor = index == 3 ?
+      Colors.blue.shade800 : Colors.grey;
+
     return Consumer<AppState>(
       builder: (context, state, child) {
 
-        Color homeColor = state.pageIndex == 0 ?
-          Colors.blue.shade800 : Colors.grey;
-        Color searchColor = state.pageIndex == 1 ?
-          Colors.blue.shade800 : Colors.grey;
-        Color notifColor = state.pageIndex == 2 ?
-          Colors.blue.shade800 : Colors.grey;
-        Color chatsColor = state.pageIndex == 3 ?
-          Colors.blue.shade800 : Colors.grey;
-
-        return Padding(
+      return Padding(
           padding: const EdgeInsets.only(bottom: 5),
           child: Wrap(
             alignment: WrapAlignment.spaceAround,

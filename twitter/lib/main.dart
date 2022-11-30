@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AppState>(create: (_) => AppState()),
+        ListenableProvider<AppState>(create: (_) => AppState()),
       ],
       child: MaterialApp(
         title: 'Squacker',
