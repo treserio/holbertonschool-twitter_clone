@@ -5,15 +5,15 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 
 class UsersSearchResult extends StatelessWidget {
-  String name;
-  String username;
-  String imgUrl;
+  final String name;
+  final String username;
+  final String imgUrl;
 
-  UsersSearchResult({
+  const UsersSearchResult({
     super.key,
     this.name = 'Name',
     this.username = 'Username',
-    this.imgUrl = 'imgUrl',
+    this.imgUrl = 'https://avatars.githubusercontent.com/u/30158551?v=4',
   });
 
   @override
