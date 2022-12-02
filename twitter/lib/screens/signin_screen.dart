@@ -2,9 +2,13 @@ import 'dart:core';
 // import 'dart:html';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/all.dart';
 import './all.dart';
+import '../models/userData.dart';
 
 
 class SignIn extends StatefulWidget {
@@ -68,11 +72,50 @@ class _SignInState extends State<SignIn> {
             controller: _passwordController,
           ),
           FlatButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
+            onPressed: () async {
+              try {
+                final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: 'emailAddress@hotmail.com',
+                  password: 'password',
+                );
+                // print(credential);
+                // print(credential.user!.metadata);
+                // ignore: use_build_context_synchronously
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+                final userDataRef = FirebaseFirestore
+                  .instance
+                  .collection('userData')
+                  .withConverter<UserData>(
+                    fromFirestore: (snapshot, _) {
+                      var data = snapshot.data();
+                      print(data!['followingList']);
+                      print(data!['followingList'][0] is String);
+                      print(data!['followersList'] is List<String>);
+                      print(data!['followersList'] is List<dynamic>);
+                      print(snapshot.data());
+                      return UserData.fromJson(snapshot.data()!);
+                    },
+                    toFirestore: (model, _) => model.toJson(),
+                  );
+                // test for setting userData based on signup, needs to be moved
+                // var mydata = UserData();
+                // userDataRef.doc(credential.user!.uid).set(mydata);
+                final what = (await userDataRef.doc(credential.user!.uid).get()).data();
+                print(what!.email);
+
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'user-not-found') {
+                  print('No user found for that email.');
+                } else if (e.code == 'wrong-password') {
+                  print('Wrong password provided for that user.');
+                }
+                print('FirebaseAuthException ${e.code} $e');
+              } catch (e) {
+                print(e);
+              }
             }
           ),
           Padding(

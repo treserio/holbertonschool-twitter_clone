@@ -1,6 +1,5 @@
-class User {
+class UserData {
   String key;
-  String userId;
   String email;
   String name;
   String userName;
@@ -8,12 +7,11 @@ class User {
   String imageUrl;
   int followers;
   int following;
-  List<String> followersList;
-  List<String> followingList;
+  List<dynamic> followersList;
+  List<dynamic> followingList;
 
-  User({
+  UserData({
     this.key = 'key',
-    this.userId = 'userId',
     this.email = 'email',
     this.name = 'name',
     this.userName = 'userName',
@@ -25,9 +23,8 @@ class User {
     this.followingList = const [''],
   });
 
-  static User fromJson(Map<dynamic, dynamic> json) => User(
+  static UserData fromJson(Map<String, dynamic> json) => UserData(
     key: json['key'],
-    userId: json['userId'],
     email: json['email'],
     name: json['name'],
     userName: json['userName'],
@@ -39,9 +36,8 @@ class User {
     followingList: json['followingList'],
   );
 
-  Map toJson() => {
+  Map<String, Object> toJson() => {
     'key': key,
-    'userId': userId,
     'email': email,
     'name': name,
     'userName': userName,

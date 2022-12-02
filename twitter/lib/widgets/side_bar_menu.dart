@@ -4,6 +4,7 @@ import 'dart:core';
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../providers/app_state.dart';
 
@@ -217,9 +218,13 @@ class _SideBarMenuState extends State<SideBarMenu> {
                 ),
               ),
               // navigate to the SignIn screen, by removing all other routes
-              onTap: () {
+              onTap: () async {
+                print('Logout');
+                print(FirebaseAuth.instance.currentUser);
                 state.setpageIndex = 0;
                 Navigator.popUntil(context, (route) => route.isFirst);
+                await FirebaseAuth.instance.signOut();
+                print(FirebaseAuth.instance.currentUser);
               },
             ),
           ),
