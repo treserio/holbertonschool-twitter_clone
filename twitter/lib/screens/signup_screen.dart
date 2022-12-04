@@ -87,10 +87,12 @@ class _SignUpState extends State<SignUp> {
               EntryField(
                 hint: 'Enter Password',
                 controller: _passwordController,
+                isPassword: true,
               ),
               EntryField(
                 hint: 'Confirm Password',
                 controller: _confirmController,
+                isPassword: true,
               ),
               FlatButton(
                 label: 'Sign Up',

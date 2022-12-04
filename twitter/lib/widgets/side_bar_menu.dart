@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../providers/app_state.dart';
+import '../providers/all.dart';
 
 class SideBarMenu extends StatefulWidget {
   const SideBarMenu({
@@ -21,14 +21,16 @@ class _SideBarMenuState extends State<SideBarMenu> {
   late String username;
   late int followers;
   late int following;
+  late String avatar;
 
   @override
   @mustCallSuper
   void initState() {
     super.initState();
-    username = 'UserName';
+    username = 'userName';
     followers = 0;
     following = 0;
+    avatar = 'avatar';
   }
 
   @override
@@ -37,14 +39,19 @@ class _SideBarMenuState extends State<SideBarMenu> {
   }
 
   @override
-  Widget build(BuildContext context) => Drawer(
+  Widget build(BuildContext context) {
+
+    username = Provider.of<AuthState>(context).activeUserData!.userName;
+    followers = Provider.of<AuthState>(context).activeUserData!.followers;
+    following = Provider.of<AuthState>(context).activeUserData!.following;
+    avatar = Provider.of<AuthState>(context).activeUserData!.imageUrl;
+
+    return Drawer(
     child: ListView(
       children: [
         ListTile(
-          leading: const CircleAvatar(
-            foregroundImage: NetworkImage(
-              'https://avatars.githubusercontent.com/u/30158551?v=4'
-            ),
+          leading: CircleAvatar(
+            foregroundImage: NetworkImage(avatar),
           ),
           contentPadding: const EdgeInsets.only(left: 20, top: 5),
           onTap: () => print('Avatar'),
@@ -219,12 +226,9 @@ class _SideBarMenuState extends State<SideBarMenu> {
               ),
               // navigate to the SignIn screen, by removing all other routes
               onTap: () async {
-                print('Logout');
-                print(FirebaseAuth.instance.currentUser);
                 state.setpageIndex = 0;
                 Navigator.popUntil(context, (route) => route.isFirst);
                 await FirebaseAuth.instance.signOut();
-                print(FirebaseAuth.instance.currentUser);
               },
             ),
           ),
@@ -232,4 +236,5 @@ class _SideBarMenuState extends State<SideBarMenu> {
       ],
     )
   );
+  }
 }
