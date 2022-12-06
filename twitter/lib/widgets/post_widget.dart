@@ -36,7 +36,7 @@ class PostWidget extends StatelessWidget {
         foregroundImage: NetworkImage(avatar),
       ),
       title: Wrap(
-        spacing: 5,
+        spacing: 10,
         children: [
           Text(
             name,
@@ -78,6 +78,7 @@ class PostWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5),
             child: ButtonBar(
               // alignment: MainAxisAlignment.end,
+              buttonPadding: const EdgeInsets.only(left: 35),
               children: [
                 const Icon(Icons.chat_bubble_rounded),
                 Text('$resquaks'),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/userData.dart';
+import '../models/user_data.dart';
 import '../screens/all.dart';
+import '../providers/all.dart';
 
 
 enum Error {
@@ -21,14 +22,16 @@ class AuthState extends ChangeNotifier {
   final userDataRef = FirebaseFirestore
     .instance
     .collection('userData')
-    .withConverter<UserData>(
+    .withConverter<UserData?>(
       fromFirestore: (snapshot, _) => UserData.fromJson(snapshot.data()!),
-      toFirestore: (userData, _) => userData.toJson(),
+      toFirestore: (userData, _) => userData == null ? userData!.toJson() : {'': null},
     );
 
-  // AuthState({
-  //   this.activeUserData = const userDataRef.doc(auth.currentUser!.uid),
-  // });
+  getUserDataById(String id) async =>
+    await userDataRef
+      .doc(id)
+      .get()
+      .then((s) => s.data());
 
   attemptSignUp(
     BuildContext context,
@@ -65,6 +68,9 @@ class AuthState extends ChangeNotifier {
         userDataRef.doc(credential.user!.uid).set(
           UserData(
             key: credential.user!.uid,
+            creationTime: Timestamp.fromDate(
+              credential.user!.metadata.creationTime!.toUtc()
+            ),
             name: name,
             userName: userName,
             displayName: userName,
@@ -100,10 +106,11 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  attemptLogin(
+  void attemptLogin(
     BuildContext context,
+    Function setState,
     TextEditingController emailController,
-    TextEditingController passwordController
+    TextEditingController passwordController,
   ) async {
     String snackText = '';
     if (emailController.text == '') {
@@ -120,9 +127,11 @@ class AuthState extends ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
+        ).then((_) => setState(() => {}));
+        await userDataRef.doc(activeUserData!.key).update(
+          {'lastSignInTime': authState.currentUser!.metadata.lastSignInTime}
         );
-        var userSnap = await userDataRef.doc(credential.user!.uid).get();
-        activeUserData = userSnap.data();
+        activeUserData = await getUserDataById(credential.user!.uid);
       } on FirebaseAuthException catch (e) {
         switch(e.code) {
           case 'invalid-email': {
@@ -142,6 +151,7 @@ class AuthState extends ChangeNotifier {
           } break;
         }
       } catch (e) {
+        // print(e);
         snackText = 'Failed to Login! Please try again.';
       }
     }
@@ -161,22 +171,30 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  logout(BuildContext context, appState) {
+  void logout(BuildContext context, AppState appState) {
     appState.setpageIndex = 0;
     authState.signOut();
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
-  // listener won't listen
-  var listener = FirebaseAuth.instance
-    .authStateChanges()
-    .listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-      }
-    });
+  void userLoggedIn(context, setState) async {
+    activeUserData = await getUserDataById(authState.currentUser!.uid);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    ).then((_) => setState(() => {}));
+  }
+
+  // listener fires off multiple times
+  // var listener = FirebaseAuth.instance
+  //   .authStateChanges()
+  //   .listen((User? user) {
+  //     if (user == null) {
+  //       print('User is currently signed out!');
+  //     } else {
+  //       print('User is signed in!');
+  //     }
+  //   });
 
   int _test = 0;
   int get test => _test;

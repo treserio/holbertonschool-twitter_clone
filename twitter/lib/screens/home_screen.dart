@@ -33,6 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
     drawer: const SideBarMenu(),
     bottomNavigationBar: const BottomMenuBar(),
-    body: const PostWidget(),
+    body: ListView(
+      // shrinkWrap: true,
+      children: const [
+        PostWidget(),
+        PostWidget(),
+      ],
+    ),
   );
 }
