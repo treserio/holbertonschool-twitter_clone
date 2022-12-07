@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/all.dart';
+import '../screens/profile_screen.dart';
+import '../models/user_data.dart';
 
 class PostWidget extends StatelessWidget {
   final String avatar;
@@ -11,6 +15,7 @@ class PostWidget extends StatelessWidget {
   final int resquaks;
   final int replies;
   final int hearts;
+  final String userKey;
 
 
   const PostWidget({
@@ -27,14 +32,32 @@ class PostWidget extends StatelessWidget {
     this.resquaks = 99,
     this.replies = 9,
     this.hearts = 999,
+    required this.userKey,
   });
 
   @override
   Widget build(BuildContext context) => Card(
     child: ListTile(
-      leading: CircleAvatar(
-        foregroundImage: NetworkImage(avatar),
+      leading: Consumer<AuthState>(
+        builder: (_, state, __) => GestureDetector(
+          onTap: () async {
+            UserData poster = await state.getUserDataById(userKey);
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                ProfileScreen(
+                  postUser: poster,
+                ),
+              ),
+            );
+          },
+          child: CircleAvatar(
+            foregroundImage: NetworkImage(avatar),
+          ),
+        ),
       ),
+
       title: Wrap(
         spacing: 10,
         children: [

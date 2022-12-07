@@ -151,7 +151,7 @@ class AuthState extends ChangeNotifier {
           } break;
         }
       } catch (e) {
-        // print(e);
+        print(e);
         snackText = 'Failed to Login! Please try again.';
       }
     }

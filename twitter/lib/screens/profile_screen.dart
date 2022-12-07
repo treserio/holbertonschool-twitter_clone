@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../widgets/all.dart';
@@ -102,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   alignment: const Alignment(0.8, -1),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 210),
-                    child: widget.postUser!.key != state.authState.currentUser!.uid ?
+                    child: widget.postUser!.key == state.authState.currentUser!.uid ?
                       TextButton(
                         onPressed: () => print('Edit Profile'),
                         style: ButtonStyle(
@@ -131,6 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // If the current user is in the followers list of the poster...
                     : widget.postUser!.followersList.contains(state.authState.currentUser!.uid) ?
                       Wrap(
+                      // MAIL ICON
                           spacing: 10,
                           children: [
                             Container(
@@ -150,22 +152,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
+                            // UNFOLLOW BUTTON
                             TextButton(
                               onPressed: () async {
+                                // apply changes
                                 widget.postUser!.followersList.remove(state.activeUserData!.key);
                                 widget.postUser!.followers -= 1;
-                                await state.userDataRef.doc(widget.postUser!.key)
-                                  .update({
+                                state.activeUserData!.followingList.remove(widget.postUser!.key);
+                                state.activeUserData!.following -= 1;
+                                // add updates as a batch update
+                                var db = FirebaseFirestore.instance;
+                                var batch = db.batch();
+                                var postRef = db.collection('userData')
+                                  .doc(widget.postUser!.key);
+                                postRef.update({
                                     'followersList': widget.postUser!.followersList,
                                     'followers': widget.postUser!.followers,
                                   });
-                                state.activeUserData!.followingList.remove(widget.postUser!.key);
-                                state.activeUserData!.following -= 1;
-                                await state.userDataRef.doc(state.activeUserData!.key)
-                                  .update({
-                                    'followersList': state.activeUserData!.followersList,
-                                    'followers': state.activeUserData!.followers,
-                                  });
+                                var activeRef = db.collection('userData')
+                                  .doc(state.activeUserData!.key);
+                                activeRef.update({
+                                  'followingList': state.activeUserData!.followingList,
+                                  'following': state.activeUserData!.following,
+                                });
+                                // Commit the batch
+                                batch.commit();
+                                // update the local state to display changes
                                 setState((() => {}));
                               },
                               style: TextButton.styleFrom(
@@ -181,6 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ]
                         )
                     : Wrap(
+                      // MAIL ICON
                         spacing: 10,
                         children: [
                           Container(
@@ -200,22 +213,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
+                          // FOLLOW BUTTON
                           TextButton(
                             onPressed: () async {
+                              // apply changes
                               widget.postUser!.followersList.add(state.activeUserData!.key);
                               widget.postUser!.followers += 1;
-                              await state.userDataRef.doc(widget.postUser!.key)
-                                .update({
+                              state.activeUserData!.followingList.add(widget.postUser!.key);
+                              state.activeUserData!.following += 1;
+                              // add updates as a batch update
+                              var db = FirebaseFirestore.instance;
+                              var batch = db.batch();
+                              var postRef = db.collection('userData')
+                                .doc(widget.postUser!.key);
+                              postRef.update({
                                   'followersList': widget.postUser!.followersList,
                                   'followers': widget.postUser!.followers,
                                 });
-                              state.activeUserData!.followingList.add(widget.postUser!.key);
-                              state.activeUserData!.following += 1;
-                              await state.userDataRef.doc(state.activeUserData!.key)
-                                .update({
-                                  'followersList': state.activeUserData!.followersList,
-                                  'followers': state.activeUserData!.followers,
-                                });
+                              var activeRef = db.collection('userData')
+                                .doc(state.activeUserData!.key);
+                              activeRef.update({
+                                'followingList': state.activeUserData!.followingList,
+                                'following': state.activeUserData!.following,
+                              });
+                              // Commit the batch
+                              batch.commit();
+                              // update the local state to display changes
                               setState((() => {}));
                             },
                             style: TextButton.styleFrom(
@@ -361,8 +384,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shrinkWrap: true,
               children: const [
                 Divider(),
-                PostWidget(),
-                PostWidget(),
+                PostWidget(userKey: 'rglSlBYoMZV9NlwKrAGCJDGxTKo2'),
+                PostWidget(userKey: 'rglSlBYoMZV9NlwKrAGCJDGxTKo2'),
               ],
             ),
           ],
