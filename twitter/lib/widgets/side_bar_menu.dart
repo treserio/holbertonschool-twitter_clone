@@ -111,9 +111,9 @@ class _SideBarMenuState extends State<SideBarMenu> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) =>
-                      ProfileScreen(postUser: activeUserData)
+                      ProfileScreen(profileUserData: activeUserData)
                     ),
-                  ),
+                  ).then((_) => setState(() => {})),
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.only(left: 20),

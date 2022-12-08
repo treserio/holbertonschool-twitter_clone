@@ -8,15 +8,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../widgets/all.dart';
+import '../screens/all.dart';
 import '../providers/all.dart';
 import '../models/user_data.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final UserData? postUser;
+  final UserData? profileUserData;
 
   const ProfileScreen({
     super.key,
-    required this.postUser,
+    required this.profileUserData,
   });
 
   @override
@@ -40,11 +41,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        // title: Image.network(widget.postUser!.coverImgUrl),
+        // title: Image.network(widget.profileUserData!.coverImgUrl),
         // centerTitle: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 20),
             child: MouseRegion(
               onEnter: (_) {
                 menuIcon = Icon(
@@ -78,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 200,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(widget.postUser!.coverImgUrl),
+                      image: NetworkImage(widget.profileUserData!.coverImgUrl),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -95,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: CircleAvatar(
                       radius: 50,
-                      foregroundImage: NetworkImage(widget.postUser!.imageUrl),
+                      foregroundImage: NetworkImage(widget.profileUserData!.imageUrl),
                     ),
                   ),
                 ),
@@ -103,9 +104,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   alignment: const Alignment(0.8, -1),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 210),
-                    child: widget.postUser!.key == state.authState.currentUser!.uid ?
+                    child: widget.profileUserData!.key == state.authState.currentUser!.uid ?
                       TextButton(
-                        onPressed: () => print('Edit Profile'),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                            EditProfileScreen(
+                              profileUserData: widget.profileUserData,
+                            )
+                          ),
+                        ).then((_) => setState(() => {})),
                         style: ButtonStyle(
                           side: MaterialStateProperty.resolveWith<BorderSide>(
                             (states) => BorderSide(
@@ -130,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       )
                     // If the current user is in the followers list of the poster...
-                    : widget.postUser!.followersList.contains(state.authState.currentUser!.uid) ?
+                    : widget.profileUserData!.followersList.contains(state.authState.currentUser!.uid) ?
                       Wrap(
                       // MAIL ICON
                           spacing: 10,
@@ -156,18 +164,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             TextButton(
                               onPressed: () async {
                                 // apply changes
-                                widget.postUser!.followersList.remove(state.activeUserData!.key);
-                                widget.postUser!.followers -= 1;
-                                state.activeUserData!.followingList.remove(widget.postUser!.key);
+                                widget.profileUserData!.followersList.remove(state.activeUserData!.key);
+                                widget.profileUserData!.followers -= 1;
+                                state.activeUserData!.followingList.remove(widget.profileUserData!.key);
                                 state.activeUserData!.following -= 1;
                                 // add updates as a batch update
                                 var db = FirebaseFirestore.instance;
                                 var batch = db.batch();
                                 var postRef = db.collection('userData')
-                                  .doc(widget.postUser!.key);
+                                  .doc(widget.profileUserData!.key);
                                 postRef.update({
-                                    'followersList': widget.postUser!.followersList,
-                                    'followers': widget.postUser!.followers,
+                                    'followersList': widget.profileUserData!.followersList,
+                                    'followers': widget.profileUserData!.followers,
                                   });
                                 var activeRef = db.collection('userData')
                                   .doc(state.activeUserData!.key);
@@ -217,18 +225,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           TextButton(
                             onPressed: () async {
                               // apply changes
-                              widget.postUser!.followersList.add(state.activeUserData!.key);
-                              widget.postUser!.followers += 1;
-                              state.activeUserData!.followingList.add(widget.postUser!.key);
+                              widget.profileUserData!.followersList.add(state.activeUserData!.key);
+                              widget.profileUserData!.followers += 1;
+                              state.activeUserData!.followingList.add(widget.profileUserData!.key);
                               state.activeUserData!.following += 1;
                               // add updates as a batch update
                               var db = FirebaseFirestore.instance;
                               var batch = db.batch();
                               var postRef = db.collection('userData')
-                                .doc(widget.postUser!.key);
+                                .doc(widget.profileUserData!.key);
                               postRef.update({
-                                  'followersList': widget.postUser!.followersList,
-                                  'followers': widget.postUser!.followers,
+                                  'followersList': widget.profileUserData!.followersList,
+                                  'followers': widget.profileUserData!.followers,
                                 });
                               var activeRef = db.collection('userData')
                                 .doc(state.activeUserData!.key);
@@ -260,7 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 25),
               child: Text(
-                widget.postUser!.name,
+                widget.profileUserData!.name,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -270,7 +278,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 0, left: 25),
               child: Text(
-                '@${widget.postUser!.userName}',
+                '@${widget.profileUserData!.userName}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
@@ -281,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 15, left: 25),
               child: Text(
-                widget.postUser!.bio,
+                widget.profileUserData!.bio,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -320,7 +328,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Text(
                     'Joined ${yearMonth.format(
-                      widget.postUser!.creationTime.toDate()
+                      widget.profileUserData!.creationTime.toDate()
                     )}',
                     style: TextStyle(
                       fontSize: 16,
@@ -340,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     spacing: 10,
                     children: [
                       Text(
-                        '${widget.postUser!.followers}',
+                        '${widget.profileUserData!.followers}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -360,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     spacing: 10,
                     children: [
                       Text(
-                        '${widget.postUser!.following}',
+                        '${widget.profileUserData!.following}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -393,7 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         mini: true,
-        onPressed: () => print('eat a dic'),
+        onPressed: () => print('Add Post'),
         child: const Icon(
           Icons.add
         ),

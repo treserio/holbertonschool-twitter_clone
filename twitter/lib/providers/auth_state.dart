@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_data.dart';
 import '../screens/all.dart';
-import '../providers/all.dart';
+import './app_state.dart';
 
 
 enum Error {
@@ -24,7 +25,7 @@ class AuthState extends ChangeNotifier {
     .collection('userData')
     .withConverter<UserData?>(
       fromFirestore: (snapshot, _) => UserData.fromJson(snapshot.data()!),
-      toFirestore: (userData, _) => userData == null ? userData!.toJson() : {'': null},
+      toFirestore: (userData, _) => userData!.toJson(),
     );
 
   getUserDataById(String id) async =>
@@ -69,7 +70,7 @@ class AuthState extends ChangeNotifier {
           UserData(
             key: credential.user!.uid,
             creationTime: Timestamp.fromDate(
-              credential.user!.metadata.creationTime!.toUtc()
+              credential.user!.metadata.creationTime!
             ),
             name: name,
             userName: userName,
@@ -92,6 +93,7 @@ class AuthState extends ChangeNotifier {
           } break;
         }
       } catch (e) {
+        // print(e);
         snackText = 'Failed to create account! Please try later.';
       }
     }
@@ -123,15 +125,15 @@ class AuthState extends ChangeNotifier {
           email: emailController.text,
           password: passwordController.text,
         );
+        await userDataRef.doc(credential.user!.uid).update(
+          {'lastSignInTime': authState.currentUser!.metadata.lastSignInTime}
+        );
+        activeUserData = await getUserDataById(credential.user!.uid);
         // ignore: use_build_context_synchronously
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         ).then((_) => setState(() => {}));
-        await userDataRef.doc(activeUserData!.key).update(
-          {'lastSignInTime': authState.currentUser!.metadata.lastSignInTime}
-        );
-        activeUserData = await getUserDataById(credential.user!.uid);
       } on FirebaseAuthException catch (e) {
         switch(e.code) {
           case 'invalid-email': {

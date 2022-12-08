@@ -1,9 +1,11 @@
-import 'dart:core';
-// import 'dart:html';
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
+// import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
 import '../widgets/all.dart';
+import '../providers/all.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -11,10 +13,15 @@ class HomeScreen extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  Icon logoutIcon = const Icon(
+    Icons.logout
+  );
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -30,6 +37,35 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         )
       ),
+      actions: [
+        Consumer<AppState>(
+          builder: (_, state, __) => MouseRegion(
+            onEnter: (_) {
+              logoutIcon = Icon(
+                Icons.logout,
+                color: Colors.blue.shade800,
+              );
+              setState(() {});
+            },
+            onExit: (_) {
+              logoutIcon = const Icon(Icons.logout);
+              setState(() {});
+            },
+            child: GestureDetector(
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                state.setpageIndex = 0;
+                // ignore: use_build_context_synchronously
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: logoutIcon,
+              ),
+            ),
+          ),
+        ),
+      ],
     ),
     drawer: const SideBarMenu(),
     bottomNavigationBar: const BottomMenuBar(),

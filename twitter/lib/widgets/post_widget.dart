@@ -47,7 +47,7 @@ class PostWidget extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) =>
                 ProfileScreen(
-                  postUser: poster,
+                  profileUserData: poster,
                 ),
               ),
             );
