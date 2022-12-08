@@ -28,8 +28,8 @@ class AuthState extends ChangeNotifier {
       toFirestore: (userData, _) => userData!.toJson(),
     );
 
-  getUserDataById(String id) async =>
-    await userDataRef
+  Future<UserData?> getUserDataById(String id) async =>
+    userDataRef
       .doc(id)
       .get()
       .then((s) => s.data());

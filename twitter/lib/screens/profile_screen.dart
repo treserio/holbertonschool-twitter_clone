@@ -392,8 +392,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shrinkWrap: true,
               children: const [
                 Divider(),
-                PostWidget(userKey: 'rglSlBYoMZV9NlwKrAGCJDGxTKo2'),
-                PostWidget(userKey: 'rglSlBYoMZV9NlwKrAGCJDGxTKo2'),
+                // PostWidget(userKey: 'rglSlBYoMZV9NlwKrAGCJDGxTKo2'),
+                // PostWidget(userKey: 'rglSlBYoMZV9NlwKrAGCJDGxTKo2'),
               ],
             ),
           ],
