@@ -19,7 +19,7 @@ class NotificationsScreen extends StatefulWidget {
 class _NotificationsScreenState extends State<NotificationsScreen> {
   late String avatar = Provider.of<AuthState>(context).activeUserData!.avatar;
 
-  var searchIcon = const Icon(
+  Icon searchIcon = const Icon(
     Icons.settings,
     color: Colors.grey,
   );

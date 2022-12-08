@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
+  final String key;
   final String userKey;
   final String postText;
   final Timestamp createdAt;
@@ -12,6 +13,7 @@ class Post {
 
   Post({
     required this.userKey,
+    this.key = 'missing',
     this.postText = 'postText',
     Timestamp? createdAt,
     this.hashtags = const [],
@@ -23,6 +25,7 @@ class Post {
 
   static Post fromJson(Map<String, dynamic> json) {
     return Post(
+      key: json['key'],
       userKey: json['userKey'],
       postText: json['postText'],
       createdAt: json['createdAt'],
@@ -35,6 +38,7 @@ class Post {
   }
 
   Map<String, Object> toJson() => {
+    'key': key,
     'userKey': userKey,
     'postText': postText,
     'createdAt': createdAt,

@@ -53,9 +53,9 @@ class EditPostScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: FlatButton(
-              onPressed: () {
+              onPressed: () async {
                 try {
-                  postRef.add(
+                  DocumentReference<Post?> postInfo = await postRef.add(
                     Post(
                       userKey: activeUserData.key,
                       postText: _postController.text,
@@ -63,6 +63,7 @@ class EditPostScreen extends StatelessWidget {
                       hashtags: _hashtagController.text.split(' '),
                     )
                   );
+                  postRef.doc(postInfo.id).update({'key': postInfo.id});
                 } catch (e) {
                   print(e);
                 }

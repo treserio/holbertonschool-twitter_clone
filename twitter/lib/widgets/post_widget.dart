@@ -19,25 +19,13 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
-  late String postText;
-  late DateTime createdAt;
-  late List<dynamic> hashtags;
+  late UserData? activeUserData = Provider.of<AuthState>(context).activeUserData;
 
-  late int resquaks;
-  late int replies;
-  late int hearts;
-
-  @override
-  @mustCallSuper
-  void initState() {
-    super.initState();
-    postText = widget.post.postText;
-    createdAt = widget.post.createdAt.toDate();
-    hashtags = widget.post.hashtags;
-    resquaks = widget.post.resquaks;
-    replies = widget.post.replies;
-    hearts = widget.post.hearts;
-  }
+  late Icon heartIcon = widget.post.likeList.contains(activeUserData?.key) ?
+    heartIcon = Icon(
+      Icons.favorite,
+      color: Colors.red.shade800,
+    ) : const Icon(Icons.favorite);
 
   DateFormat timeSince = DateFormat('dd days');
 
@@ -45,7 +33,7 @@ class _PostWidgetState extends State<PostWidget> {
   Widget build(BuildContext context) {
 
     List<Widget> hashtagWidgets = [];
-    for (var tag in hashtags) {
+    for (var tag in widget.post.hashtags) {
       hashtagWidgets.add(
         Text('#$tag', style: const TextStyle(color: Colors.deepOrange)),
       );
@@ -85,7 +73,9 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                   Text(
                     '@${snapshot.data!.userName} · ${
-                      DateTime.now().difference(createdAt).inDays
+                      DateTime.now().difference(
+                        widget.post.createdAt.toDate()
+                      ).inDays
                     } days ago',
                     style: const TextStyle(
                       fontSize: 16,
@@ -105,9 +95,9 @@ class _PostWidgetState extends State<PostWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 2, bottom: 8),
+                    padding: const EdgeInsets.only(top: 2, bottom: 8),
                     child: Text(
-                      postText,
+                      widget.post.postText,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -125,11 +115,48 @@ class _PostWidgetState extends State<PostWidget> {
                       buttonPadding: const EdgeInsets.only(left: 35),
                       children: [
                         const Icon(Icons.chat_bubble_rounded),
-                        Text('$resquaks'),
+                        Text('${widget.post.resquaks}'),
                         const Icon(Icons.replay),
-                        Text('$replies'),
-                        const Icon(Icons.favorite),
-                        Text('$hearts'),
+                        Text('${widget.post.replies}'),
+                        MouseRegion(
+                          onEnter: (_) {
+                            heartIcon = Icon(
+                              Icons.favorite,
+                              color: Colors.red.shade300,
+                            );
+                            setState(() {});
+                          },
+                          onExit: (_) async {
+                            heartIcon = widget.post.likeList
+                              .contains(activeUserData?.key) ?
+                                heartIcon = Icon(
+                                  Icons.favorite,
+                                  color: Colors.red.shade800,
+                                )
+                              : const Icon(Icons.favorite);
+                            setState(() {});
+                          },
+                          child: GestureDetector(
+                            onTap: () {
+                              if (widget.post.likeList.contains(activeUserData?.key)) {
+                                widget.post.likeList.remove(activeUserData?.key);
+                                widget.post.hearts -= 1;
+                                heartIcon = const Icon(Icons.favorite);
+                              } else {
+                                widget.post.likeList.add(activeUserData?.key);
+                                widget.post.hearts += 1;
+                                heartIcon = Icon(
+                                  Icons.favorite,
+                                  color: Colors.red.shade800,
+                                );
+                              }
+                              setState(() {});
+                              postRef.doc(widget.post.key).set(widget.post);
+                            },
+                            child: heartIcon,
+                          )
+                        ),
+                        Text('${widget.post.hearts}'),
                         const Icon(Icons.share),
                       ]
                     ),
