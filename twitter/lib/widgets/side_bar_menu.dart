@@ -45,7 +45,12 @@ class _SideBarMenuState extends State<SideBarMenu> {
               foregroundImage: NetworkImage(activeUserData!.imageUrl),
             ),
             contentPadding: const EdgeInsets.only(left: 20, top: 5),
-            onTap: () => print('Avatar'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                ProfileScreen(profileUserData: activeUserData)
+              ),
+            ).then((_) => setState(() => {})),
             hoverColor: Colors.white,
           ),
           Padding(

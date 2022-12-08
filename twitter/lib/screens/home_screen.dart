@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Icons.logout
   );
 
-  fetchRecentPosts() async =>
+  Future<List<Post>> fetchRecentPosts() async =>
     await FirebaseFirestore
       .instance
       .collection('posts')
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
     drawer: const SideBarMenu(),
     bottomNavigationBar: const BottomMenuBar(),
-    body: FutureBuilder<dynamic>(
+    body: FutureBuilder<List<Post>>(
       future: fetchRecentPosts(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {

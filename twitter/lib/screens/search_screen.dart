@@ -3,6 +3,8 @@ import 'dart:core';
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_state.dart';
 import '../widgets/all.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late TextEditingController _searchController;
+  late String avatar = Provider.of<AuthState>(context).activeUserData!.imageUrl;
 
   var searchIcon = const Icon(
     Icons.settings,
@@ -49,14 +52,12 @@ class _SearchScreenState extends State<SearchScreen> {
       title: Center(
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               flex: 0,
               child: Padding(
-                padding: EdgeInsets.only(right: 15),
+                padding: const EdgeInsets.only(right: 15),
                 child: CircleAvatar(
-                  foregroundImage: NetworkImage(
-                    'https://avatars.githubusercontent.com/u/30158551?v=4'
-                  ),
+                  foregroundImage: NetworkImage(avatar),
                 ),
               )
             ),
