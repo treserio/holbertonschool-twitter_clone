@@ -203,7 +203,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     width: 110,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(widget.profileUserData!.imageUrl),
+                        image: NetworkImage(widget.profileUserData!.avatar),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(55),
@@ -249,7 +249,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       try {
                                         http.Response res = await http.get(Uri.parse(_avatarController.text));
                                         if (res.statusCode == 200 && res.headers['content-type']!.contains('image')) {
-                                          state.activeUserData!.imageUrl =
+                                          state.activeUserData!.avatar =
                                             _avatarController.text;
                                           setState(() {});
                                         }

@@ -42,7 +42,7 @@ class _SideBarMenuState extends State<SideBarMenu> {
         children: [
           ListTile(
             leading: CircleAvatar(
-              foregroundImage: NetworkImage(activeUserData!.imageUrl),
+              foregroundImage: NetworkImage(activeUserData!.avatar),
             ),
             contentPadding: const EdgeInsets.only(left: 20, top: 5),
             onTap: () => Navigator.push(

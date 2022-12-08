@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: CircleAvatar(
                       radius: 50,
-                      foregroundImage: NetworkImage(widget.profileUserData!.imageUrl),
+                      foregroundImage: NetworkImage(widget.profileUserData!.avatar),
                     ),
                   ),
                 ),

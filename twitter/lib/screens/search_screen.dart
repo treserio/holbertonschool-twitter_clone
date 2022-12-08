@@ -18,7 +18,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late TextEditingController _searchController;
-  late String avatar = Provider.of<AuthState>(context).activeUserData!.imageUrl;
+  late String avatar = Provider.of<AuthState>(context).activeUserData!.avatar;
 
   var searchIcon = const Icon(
     Icons.settings,

@@ -17,7 +17,7 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  late String avatar = Provider.of<AuthState>(context).activeUserData!.imageUrl;
+  late String avatar = Provider.of<AuthState>(context).activeUserData!.avatar;
 
   var searchIcon = const Icon(
     Icons.settings,

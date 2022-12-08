@@ -33,7 +33,7 @@ class EditPostScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: CircleAvatar(
-                    foregroundImage: NetworkImage(activeUserData.imageUrl),
+                    foregroundImage: NetworkImage(activeUserData.avatar),
                   ),
                 )
               ),

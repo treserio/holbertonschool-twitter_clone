@@ -70,7 +70,7 @@ class _PostWidgetState extends State<PostWidget> {
                   );
                 },
                 child: CircleAvatar(
-                  foregroundImage: NetworkImage(snapshot.data!.imageUrl),
+                  foregroundImage: NetworkImage(snapshot.data!.avatar),
                 ),
               ),
               title: Wrap(
