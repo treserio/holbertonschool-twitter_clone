@@ -5,6 +5,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import '../models/user_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../screens/profile_screen.dart';
 
 class UsersSearchResult extends StatelessWidget {
   final UserData user;
@@ -20,8 +21,16 @@ class UsersSearchResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-    leading: CircleAvatar(
-      foregroundImage: NetworkImage(user.avatar),
+    leading: GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>
+          ProfileScreen(profileUserData: user)
+        ),
+      ).then((_) => setState(() => {})),
+      child: CircleAvatar(
+        foregroundImage: NetworkImage(user.avatar),
+      ),
     ),
     title: Text(
       user.name,
