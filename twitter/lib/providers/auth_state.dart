@@ -20,7 +20,7 @@ class AuthState extends ChangeNotifier {
   FirebaseAuth authState = FirebaseAuth.instance;
   late UserData? activeUserData;
 
-  final userDataRef = FirebaseFirestore
+  final CollectionReference<UserData?> userDataRef = FirebaseFirestore
     .instance
     .collection('userData')
     .withConverter<UserData?>(
