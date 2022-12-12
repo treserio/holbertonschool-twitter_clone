@@ -23,19 +23,17 @@ class Post {
     this.likeList = const [],
   }) : createdAt = createdAt ?? Timestamp.now();
 
-  static Post fromJson(Map<String, dynamic> json) {
-    return Post(
-      key: json['key'],
-      userKey: json['userKey'],
-      postText: json['postText'],
-      createdAt: json['createdAt'],
-      hashtags: json['hashtags'],
-      resquaks: json['resquaks'],
-      replies: json['replies'],
-      hearts: json['hearts'],
-      likeList: json['likeList'],
-    );
-  }
+  static Post fromJson(Map<String, dynamic> json) => Post(
+    key: json['key'],
+    userKey: json['userKey'],
+    postText: json['postText'],
+    createdAt: json['createdAt'],
+    hashtags: json['hashtags'],
+    resquaks: json['resquaks'],
+    replies: json['replies'],
+    hearts: json['hearts'],
+    likeList: json['likeList'],
+  );
 
   Map<String, Object> toJson() => {
     'key': key,

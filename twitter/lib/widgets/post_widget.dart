@@ -20,6 +20,12 @@ class PostWidget extends StatefulWidget {
 
 class _PostWidgetState extends State<PostWidget> {
   late UserData? activeUserData = Provider.of<AuthState>(context).activeUserData;
+  // hard returns will still show up, may need to limit on those as well
+  late int lastSpace = widget.post.postText.substring(0, 198).lastIndexOf(' ');
+  late String displayText = widget.post.postText.length > 200 ?
+    '${widget.post.postText.substring(0, lastSpace)}...' :
+    widget.post.postText;
+
 
   late Icon heartIcon = widget.post.likeList.contains(activeUserData?.key) ?
     heartIcon = Icon(
@@ -43,130 +49,161 @@ class _PostWidgetState extends State<PostWidget> {
       future: Provider.of<AuthState>(context).getUserDataById(widget.post.userKey),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Card(
-            child: ListTile(
-              leading: GestureDetector(
-                onTap: () async {
-                  // ignore: use_build_context_synchronously
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                      ProfileScreen(
-                        profileUserData: snapshot.data,
-                      ),
+          return ExpansionTile(
+            textColor: Colors.black,
+            iconColor: Colors.grey.shade700,
+            leading: GestureDetector(
+              onTap: () async {
+                // ignore: use_build_context_synchronously
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                    ProfileScreen(
+                      profileUserData: snapshot.data,
                     ),
-                  );
-                },
-                child: CircleAvatar(
-                  foregroundImage: NetworkImage(snapshot.data!.avatar),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                foregroundImage: NetworkImage(snapshot.data!.avatar),
+              ),
+            ),
+            title: Wrap(
+              spacing: 10,
+              children: [
+                Text(
+                  snapshot.data!.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
-              title: Wrap(
-                spacing: 10,
-                children: [
-                  Text(
-                    snapshot.data!.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                    ),
+                Text(
+                  '@${snapshot.data!.userName} · ${
+                    DateTime.now().difference(
+                      widget.post.createdAt.toDate()
+                    ).inDays
+                  } days ago',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.deepOrange,
                   ),
-                  Text(
-                    '@${snapshot.data!.userName} · ${
-                      DateTime.now().difference(
-                        widget.post.createdAt.toDate()
-                      ).inDays
-                    } days ago',
+                ),
+              ]
+            ),
+            subtitle: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 8),
+                  child: Text(
+                    displayText,
                     style: const TextStyle(
+                      color: Colors.black,
                       fontSize: 16,
-                      color: Colors.deepOrange,
                     ),
                   ),
-                ]
-              ),
-              trailing: GestureDetector(
-                onTap: () => print('downArrow'),
-                child: const Icon(
-                  Icons.arrow_drop_down,
-                )
-              ),
-              subtitle: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2, bottom: 8),
-                    child: Text(
-                      widget.post.postText,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
+                ),
+                Wrap(
+                  spacing: 10,
+                  children: hashtagWidgets,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: ButtonBar(
+                    // alignment: MainAxisAlignment.end,
+                    buttonPadding: const EdgeInsets.only(left: 35),
+                    children: [
+                      const Icon(Icons.chat_bubble_rounded),
+                      Text('${widget.post.resquaks}'),
+                      const Icon(Icons.replay),
+                      Text('${widget.post.replies}'),
+                      MouseRegion(
+                        onEnter: (_) {
+                          heartIcon = Icon(
+                            Icons.favorite,
+                            color: Colors.red.shade300,
+                          );
+                          setState(() {});
+                        },
+                        onExit: (_) async {
+                          heartIcon = widget.post.likeList
+                            .contains(activeUserData?.key) ?
+                              heartIcon = Icon(
+                                Icons.favorite,
+                                color: Colors.red.shade800,
+                              )
+                            : const Icon(Icons.favorite);
+                          setState(() {});
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            if (widget.post.likeList.contains(activeUserData?.key)) {
+                              widget.post.likeList.remove(activeUserData?.key);
+                              widget.post.hearts -= 1;
+                              heartIcon = const Icon(Icons.favorite);
+                            } else {
+                              widget.post.likeList.add(activeUserData?.key);
+                              widget.post.hearts += 1;
+                              heartIcon = Icon(
+                                Icons.favorite,
+                                color: Colors.red.shade800,
+                              );
+                            }
+                            setState(() {});
+                            postRef.doc(widget.post.key).set(widget.post);
+                          },
+                          child: heartIcon,
+                        )
                       ),
-                    ),
+                      Text('${widget.post.hearts}'),
+                      const Icon(Icons.share),
+                    ]
                   ),
-                  Wrap(
-                    spacing: 10,
-                    children: hashtagWidgets,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: ButtonBar(
-                      // alignment: MainAxisAlignment.end,
-                      buttonPadding: const EdgeInsets.only(left: 35),
-                      children: [
-                        const Icon(Icons.chat_bubble_rounded),
-                        Text('${widget.post.resquaks}'),
-                        const Icon(Icons.replay),
-                        Text('${widget.post.replies}'),
-                        MouseRegion(
-                          onEnter: (_) {
-                            heartIcon = Icon(
-                              Icons.favorite,
-                              color: Colors.red.shade300,
-                            );
-                            setState(() {});
-                          },
-                          onExit: (_) async {
-                            heartIcon = widget.post.likeList
-                              .contains(activeUserData?.key) ?
-                                heartIcon = Icon(
-                                  Icons.favorite,
-                                  color: Colors.red.shade800,
-                                )
-                              : const Icon(Icons.favorite);
-                            setState(() {});
-                          },
-                          child: GestureDetector(
-                            onTap: () {
-                              if (widget.post.likeList.contains(activeUserData?.key)) {
-                                widget.post.likeList.remove(activeUserData?.key);
-                                widget.post.hearts -= 1;
-                                heartIcon = const Icon(Icons.favorite);
-                              } else {
-                                widget.post.likeList.add(activeUserData?.key);
-                                widget.post.hearts += 1;
-                                heartIcon = Icon(
-                                  Icons.favorite,
-                                  color: Colors.red.shade800,
-                                );
-                              }
-                              setState(() {});
-                              postRef.doc(widget.post.key).set(widget.post);
-                            },
-                            child: heartIcon,
-                          )
-                        ),
-                        Text('${widget.post.hearts}'),
-                        const Icon(Icons.share),
-                      ]
-                    ),
-                  ),
-                ],
-              )
-            )
+                ),
+              ],
+            ),
+            onExpansionChanged: (val) {
+              val && widget.post.postText.length > 200 ?
+              displayText = widget.post.postText
+              : widget.post.postText.length > 200 ?
+              displayText = '${widget.post.postText.substring(0, lastSpace)}...'
+              : null;
+              setState(() => {});
+            }
+            // children: [
+            //   widget.post.postText.length > 200 ?
+            //   Text(
+            //     widget.post.postText.substring(201),
+            //     style: const TextStyle(
+            //       color: Colors.black,
+            //       fontSize: 16,
+            //     ),
+            //   ) : const Text(''),
+            // ],
           );
         }
-        return const Text('');
+        //   Card(
+        //     child: ListTile(
+
+
+        //       trailing: GestureDetector(
+        //         onTap: () => print('downArrow'),
+        //         child: const Icon(
+        //           Icons.arrow_drop_down,
+        //         )
+        //       ),
+
+        //     )
+        //   );
+        // }
+        return const Padding(
+          padding: EdgeInsets.all(30),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       }
     );
   }
