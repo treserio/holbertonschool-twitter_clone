@@ -28,10 +28,21 @@ class _PostWidgetState extends State<PostWidget> {
 
 
   late Icon heartIcon = widget.post.likeList.contains(activeUserData?.key) ?
-    heartIcon = Icon(
+    Icon(
       Icons.favorite,
       color: Colors.red.shade800,
     ) : const Icon(Icons.favorite);
+  late Icon repliesIcon = widget.post.repliesList.contains(activeUserData?.key) ?
+    Icon(
+      Icons.replay,
+      color: Colors.purple.shade800,
+    ) : const Icon(Icons.replay);
+  late Icon resquaksIcon = widget.post.resquaksList.contains(activeUserData?.key) ?
+    Icon(
+      Icons.chat_bubble_rounded,
+      color: Colors.green.shade800,
+    ) : const Icon(Icons.chat_bubble_rounded);
+
 
   DateFormat timeSince = DateFormat('dd days');
 
@@ -115,9 +126,83 @@ class _PostWidgetState extends State<PostWidget> {
                     // alignment: MainAxisAlignment.end,
                     buttonPadding: const EdgeInsets.only(left: 35),
                     children: [
-                      const Icon(Icons.chat_bubble_rounded),
+                      MouseRegion(
+                        onEnter: (_) {
+                          resquaksIcon = Icon(
+                            Icons.chat_bubble_rounded,
+                            color: Colors.green.shade300,
+                          );
+                          setState(() {});
+                        },
+                        onExit: (_) async {
+                          resquaksIcon = widget.post.resquaksList
+                            .contains(activeUserData?.key) ?
+                              resquaksIcon = Icon(
+                                Icons.chat_bubble_rounded,
+                                color: Colors.green.shade800,
+                              )
+                            : const Icon(Icons.chat_bubble_rounded);
+                          setState(() {});
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            if (widget.post.resquaksList.contains(activeUserData?.key)) {
+                              widget.post.resquaksList.remove(activeUserData?.key);
+                              widget.post.resquaks -= 1;
+                              resquaksIcon = const Icon(Icons.chat_bubble_rounded);
+                            } else {
+                              widget.post.resquaksList.add(activeUserData?.key);
+                              widget.post.resquaks += 1;
+                              resquaksIcon = Icon(
+                                Icons.chat_bubble_rounded,
+                                color: Colors.green.shade800,
+                              );
+                            }
+                            setState(() {});
+                            postRef.doc(widget.post.key).set(widget.post);
+                          },
+                          child: resquaksIcon,
+                        )
+                      ),
                       Text('${widget.post.resquaks}'),
-                      const Icon(Icons.replay),
+                      MouseRegion(
+                        onEnter: (_) {
+                          repliesIcon = Icon(
+                            Icons.replay,
+                            color: Colors.purple.shade300,
+                          );
+                          setState(() {});
+                        },
+                        onExit: (_) async {
+                          repliesIcon = widget.post.repliesList
+                            .contains(activeUserData?.key) ?
+                              repliesIcon = Icon(
+                                Icons.replay,
+                                color: Colors.purple.shade800,
+                              )
+                            : const Icon(Icons.replay);
+                          setState(() {});
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            if (widget.post.repliesList.contains(activeUserData?.key)) {
+                              widget.post.repliesList.remove(activeUserData?.key);
+                              widget.post.replies -= 1;
+                              repliesIcon = const Icon(Icons.replay);
+                            } else {
+                              widget.post.repliesList.add(activeUserData?.key);
+                              widget.post.replies += 1;
+                              repliesIcon = Icon(
+                                Icons.replay,
+                                color: Colors.purple.shade800,
+                              );
+                            }
+                            setState(() {});
+                            postRef.doc(widget.post.key).set(widget.post);
+                          },
+                          child: repliesIcon,
+                        )
+                      ),
                       Text('${widget.post.replies}'),
                       MouseRegion(
                         onEnter: (_) {

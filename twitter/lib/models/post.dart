@@ -10,6 +10,8 @@ class Post {
   int replies;
   int hearts;
   List<dynamic> likeList;
+  List<dynamic> repliesList;
+  List<dynamic> resquaksList;
 
   Post({
     required this.userKey,
@@ -21,6 +23,8 @@ class Post {
     this.replies = 0,
     this.hearts = 0,
     this.likeList = const [],
+    this.repliesList = const [],
+    this.resquaksList = const [],
   }) : createdAt = createdAt ?? Timestamp.now();
 
   static Post fromJson(Map<String, dynamic> json) => Post(
@@ -33,6 +37,8 @@ class Post {
     replies: json['replies'],
     hearts: json['hearts'],
     likeList: json['likeList'],
+    repliesList: json['repliesList'],
+    resquaksList: json['resquaksList'],
   );
 
   Map<String, Object> toJson() => {
@@ -45,6 +51,8 @@ class Post {
     'replies': replies,
     'hearts': hearts,
     'likeList': likeList,
+    'repliesList': repliesList,
+    'resquaksList': resquaksList,
   };
 }
 
